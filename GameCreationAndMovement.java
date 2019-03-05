@@ -1,15 +1,17 @@
 public class GameCreationAndMovement
 {
-	static int[][] gameBoard = {{1,2,3},{4,5,6},{7,8,0}};
+	static int[][] gameBoard = {{1,9,3},{4,5,6},{4,8,0}};
 	//{{5,2,6},{1,0,3},{4,8,7}};
-	public static void main(String args[])
+	/* public static void main(String args[])
 	{
 		printBoard();
-		//move('n');
+		//move(1, 2, 'n');
+		//west(1, 1);
 		System.out.println();
 		printBoard();
 		System.out.println(isGameOver());
-	}
+		System.out.println(numberWrong());
+	} */
 	
 	/*	
 	*	Will work with 16x16 && 9x9 as long as r == c
@@ -64,17 +66,36 @@ public class GameCreationAndMovement
 	
 	public static boolean isGameOver()
 	{
+		int numberOfWrong = 0;
 		int count = 1;
 		for(int r = 0; r < gameBoard.length; r++)
 			for(int c = 0; c < gameBoard.length; c++)
 			{
-				if(count != 9){
+				if(count != ((gameBoard.length*gameBoard.length))){
 					if(!(gameBoard[r][c] == count)) return false;
 					count++;
 				}
-				else
+				else{
 					if(gameBoard[r][c] != 0) return false;
+				}
 			}
 		return true;
+	}
+	public static int numberWrong()
+	{
+		int numberOfWrong = 0;
+		int count = 1;
+		for(int r = 0; r < gameBoard.length; r++)
+			for(int c = 0; c < gameBoard.length; c++)
+			{
+				if(count != ((gameBoard.length*gameBoard.length))){
+					if(!(gameBoard[r][c] == count)) numberOfWrong++;
+					count++;
+				}
+				else{
+					if(gameBoard[r][c] != 0) numberOfWrong++;
+				}
+			}
+		return numberOfWrong;
 	}
 }
