@@ -1,5 +1,13 @@
 import javax.swing.*;
 
+/**
+*	CS4006 A* Project
+*	Alan Finnin		17239621
+*	Daniel Dalton	17219477
+*	Stephen Cliffe 17237157
+*/
+
+
 public class Main {
     public static void main(String[] args){
         System.out.println(inputWindow());
