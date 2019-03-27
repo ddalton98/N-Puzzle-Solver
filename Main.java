@@ -1,3 +1,7 @@
+import javax.swing.*;
+import java.util.*;
+
+/**
 *	CS4006 A* Project
 *	Alan Finnin		17239621
 *	Daniel Dalton	17219477
@@ -7,18 +11,21 @@
 
 public class Main {
     public static void main(String[] args){
-		string input = inputWindow();
+		String input = inputWindow();
         //convertSqr(String input);
+		//5 6 4 7 0 3 1 2 8
+		//5 6 4 7 0 3 1 2 8 9 10 11 12 13 14 15
     }
 
     private static String inputWindow(){
 		boolean correct = true;
         String msg = "Please input a 9 digits(0-9) with a space separating each";
-        String pattern = "^([0-9]{1}\\s+){9}[0-9]";
+        String patternEight = "^([0-8]{1}\\s+){8}[0-8]\\s*";
+		String patternFifteen = "^([0-9]{1,2}\\s+){15}[0-9]{1,2}\\s*";
         String rawInput = JOptionPane.showInputDialog(null, msg, "8 Puzzle", JOptionPane.QUESTION_MESSAGE);
-        String checkStr = rawInput.replaceAll("\\s", "");
-        if(rawInput.matches(pattern)){
-			String[] strInput = rawInput.split(" ");
+    
+        if(rawInput.matches(patternEight) || rawInput.matches(patternFifteen)){
+			String[] strInput = rawInput.split("\\s+");
 			int inputArr[] = new int[strInput.length];
 			
 			for(int i = 0; i < strInput.length; i++){
