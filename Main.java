@@ -1,7 +1,3 @@
-import javax.swing.*;
-import java.util.*;
-
-/**
 *	CS4006 A* Project
 *	Alan Finnin		17239621
 *	Daniel Dalton	17219477
@@ -11,17 +7,17 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args){
-        System.out.println(inputWindow());
+		string input = inputWindow();
+        //convertSqr(String input);
     }
 
     private static String inputWindow(){
 		boolean correct = true;
         String msg = "Please input a 9 digits(0-9) with a space separating each";
-        String pattern1 = "^(?!.*(.).*\\1)*\\d{10}$";
-        String pattern2 = "^([0-9]{1}\s+){10}\s*";
+        String pattern = "^([0-9]{1}\\s+){9}[0-9]";
         String rawInput = JOptionPane.showInputDialog(null, msg, "8 Puzzle", JOptionPane.QUESTION_MESSAGE);
         String checkStr = rawInput.replaceAll("\\s", "");
-        if(checkStr.matches(pattern1) && rawInput.matches(pattern2)){
+        if(rawInput.matches(pattern)){
 			String[] strInput = rawInput.split(" ");
 			int inputArr[] = new int[strInput.length];
 			
@@ -33,7 +29,7 @@ public class Main {
 			
 			for(int i = 0; i < inputArr.length; i++){
 				if(tempArr[i] != i){
-					JOptionPane.showMessageDialog(null, "Error: Entry format incorrect", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Error: Entry format incorrect, duplicate digit", "Error", JOptionPane.ERROR_MESSAGE);
 					return inputWindow();
 				}
 			}
