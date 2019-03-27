@@ -43,4 +43,21 @@ public class Main {
             return inputWindow();
         }
     }
+    
+    public static int[][] convertSqr(String in){
+	  int temp [][] = {{0,0,0},{0,0,0},{0,0,0}};
+	  
+	  String split[] = in.split("\\s+");
+	  int len = (int) Math.sqrt(split.length);
+	  int count = 0;
+	  
+	  for(int x = 0; x < len; x++){
+		for(int y = 0; y < len; y++){
+			temp[x][y] = Integer.parseInt(split[count]);
+			count++;
+		}
+	  }
+	  
+	  return temp;
+  } 
 }
