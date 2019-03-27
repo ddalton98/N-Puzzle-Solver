@@ -1,6 +1,8 @@
 import javax.swing.*;
 
 public class Main {
+  private static ArrayList<Board> open = new ArrayList<Board>();
+	
     public static void main(String[] args){
         System.out.println(inputWindow());
     }
@@ -35,4 +37,68 @@ public class Main {
 	  
 	  return temp;
   } 
+	
+  public static void getMovements(Board a){
+	  int[][] table = a.getTable();
+	  int pos0[] = getPos0(table); 
+	  int x = pos0[0];
+	  int y = pos0[1];
+	  
+	  int west  = y + 1;
+	  int east  = y - 1;
+	  int north = x - 1;
+	  int south = x + 1;
+	  
+	  if(!(west > 2)){ //west
+		  int next = table[x][west];
+		  System.out.print("West:  " + next);
+		  
+		  int[][] b = a.getTable();
+		  b[x][y] = next;
+		  b[x][west] = 0;
+		  
+		  Board temp = new Board(b, goal, 0);
+		  System.out.println("\tH: " + temp.getValue());
+		  open.add(temp);
+	  }
+	  
+	  if(!(east < 0)){ //east
+		  int next = table[x][east];
+		  System.out.print("East:  " + next);
+		  
+		  int[][] b = a.getTable();
+		  b[x][y] = next;
+		  b[x][east] = 0;
+		  
+		  Board temp = new Board(b, goal, 0);
+		  System.out.println("\tH: " + temp.getValue());
+		  open.add(temp);
+	  }
+	  
+	  if(!(south > 2)){ //south
+		  int next = table[south][y];
+		  System.out.print("South: " + next);
+		  
+		  int[][] b = a.getTable();
+		  b[x][y] = next;
+		  b[south][y] = 0;
+		  
+		  Board temp = new Board(b, goal, 0);
+		  System.out.println("\tH: " + temp.getValue());
+		  open.add(temp);
+	  }
+	  
+	  if(!(north < 0)){ //north
+		  int next = table[north][y];
+		  System.out.print("North: " + next);
+		  
+		  int[][] b = a.getTable();
+		  b[x][y] = next;
+		  b[north][y] = 0;
+		  
+		  Board temp = new Board(b, goal, 0);
+		  System.out.println("\tH: " + temp.getValue());
+		  open.add(temp);
+	  }
+  }
 }
