@@ -48,8 +48,7 @@ public class is17237157{
 	
 	currentBoard.printBoard();
   }
-
-
+  
   private static String inputWindow(String state){
 		boolean correct = true;
         String msg = "Please input a 9 digit(0-9) " + state + " with a space separating each";
