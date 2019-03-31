@@ -50,33 +50,42 @@ public class is17237157{
   }
   
   private static String inputWindow(String state){
+		
 		boolean correct = true;
-        String msg = "Please input a 9 digit(0-9) " + state + " with a space separating each";
-        String patternEight = "^([0-8]{1}\\s+){8}[0-8]\\s*";
-		String patternFifteen = "^([0-9]{1,2}\\s+){15}[0-9]{1,2}\\s*";
-        String rawInput = JOptionPane.showInputDialog(null, msg, "8 Puzzle", JOptionPane.QUESTION_MESSAGE);
+		String msg = "Please input a square puzzle(3x3, 4x4, etc.)\n using numbers" + state + " with a space separating each";
+		String pattern = "^(\\d{1,2}\\s+){8,}\\d{1,2}(?=\\s)*";
+		String rawInput = JOptionPane.showInputDialog(null, msg, "8 Puzzle", JOptionPane.QUESTION_MESSAGE);
 
-        if(rawInput.matches(patternEight) || rawInput.matches(patternFifteen)){
+		if(rawInput.matches(pattern)){
 			String[] strInput = rawInput.split("\\s+");
 			int inputArr[] = new int[strInput.length];
-
 			for(int i = 0; i < strInput.length; i++){
 				inputArr[i] = Integer.parseInt(strInput[i]);
 			}
+			
 			int tempArr[] = inputArr;
 			Arrays.sort(tempArr);
 
 			for(int i = 0; i < inputArr.length; i++){
 				if(tempArr[i] != i){
-					JOptionPane.showMessageDialog(null, "Error: Entry format incorrect, duplicate digit", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(null, "Entry format incorrect: Duplicate Digit.", "Error!", JOptionPane.ERROR_MESSAGE);
 					return inputWindow(state);
 				}
 			}
-            return rawInput;
-        }else {
-            JOptionPane.showMessageDialog(null, "Error: Entry format incorrect", "Error", JOptionPane.ERROR_MESSAGE);
-            return inputWindow(state);
-        }
+			//Test for squareness
+			int x = tempArr[tempArr.length-1]+1;
+			double sr = Math.sqrt(x); 
+		  
+			if((sr - Math.floor(sr)) == 0){
+				return rawInput;
+			}
+			JOptionPane.showMessageDialog(null, "Entry format incorrect: Not a perfect square puzzle\nI.E. 3x3, 4x4 etc.", "Error", JOptionPane.ERROR_MESSAGE);
+			return inputWindow(state);
+		}else {
+			JOptionPane.showMessageDialog(null, "Entry format incorrect, Tip: Keep cats away from the keyboard.", "Error", JOptionPane.ERROR_MESSAGE);
+			return inputWindow(state);
+		}
+	}
 }
 
   public static void getMovements(Board a, int g){
