@@ -1,12 +1,13 @@
 import java.util.*;
 import java.lang.*;
 import javax.swing.*;
+import java.time.*;
 /**
 *   Alan Finnin     17239621
 *   Daniel Dalton   17219477
 *   Stephen Cliffe  17237157
 **/
-public class is17237157{
+public class Main{
   private static ArrayList<Board> open = new ArrayList<Board>();
   private static ArrayList<Board> closed = new ArrayList<Board>();
   //private static int goal[][] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
@@ -15,12 +16,13 @@ public class is17237157{
   public static void main(String[] args){
     int[][] temp;
 
-    temp = convertSqr("1 2 3 7 8 0 4 5 6");//inputWindow("start state"));
+    temp = convertSqr(inputWindow("start state"));//inputWindow("start state"));
     //goal = convertSqr(inputWindow("end state"));
-
+	LocalDateTime startTime = LocalDateTime.now();
     Board currentBoard = new Board(temp,goal,0);
 	
 	int g = 0; //keeps track of level of current table
+	int curTable[][];
 	
 	//check if currentBoard = end goal, exit if true
 	while(currentBoard.finish() == false){
@@ -35,10 +37,12 @@ public class is17237157{
 		sort();
 		
 		//set currentBoard to board with lowest value
-		currentBoard = new Board(copyArr2D(open.get(0).getTable()), goal, open.get(0).getG());
+		curTable = open.get(0).getTable();
+		g = open.get(0).getG();
+		currentBoard = new Board(copyArr2D(curTable), goal, g);
 		
 		//adds chosen board to the closed array
-		closed.add(new Board(copyArr2D(open.get(0).getTable()), goal, open.get(0).getG()));
+		closed.add(new Board(copyArr2D(curTable), goal, g));
 		
 		//removes chosen board from open array
 		open.remove(0);
@@ -47,6 +51,10 @@ public class is17237157{
 	}
 	
 	currentBoard.printBoard();
+	LocalDateTime endTime = LocalDateTime.now();
+	Duration duration = Duration.between(startTime, endTime);
+
+	System.out.println("Time taken: " + duration.getSeconds() + "." + duration.getNano()/1000000 + "s");
   }
   
   private static String inputWindow(String state){
@@ -86,7 +94,7 @@ public class is17237157{
 			return inputWindow(state);
 		}
 	}
-}
+
 
   public static void getMovements(Board a, int g){
 	  int[][] table = a.getTable();
@@ -171,14 +179,7 @@ public static boolean isClosed(Board a){
 }
 
   public static void sort(){
-	  int n = open.size();
-	  for(int i = 0; i < n -1; i++){
-		  for(int j = 0; j < n-i-1; j++){
-			  if(open.get(j).getValue() > open.get(j+1).getValue()){
-				  Collections.swap(open, j, j + 1);
-			  }
-		  }
-	  }
+	  Collections.sort(open, new SortBoard());
   }
 
   public static int[][] copyArr2D(int[][] in){
@@ -189,7 +190,6 @@ public static boolean isClosed(Board a){
         out[i][j] = in[i][j];
       }
     }
-
     return out;
   }
 
@@ -225,3 +225,13 @@ public static boolean isClosed(Board a){
 	  return temp;
   }
 }
+  
+  class SortBoard implements Comparator<Board> 
+{ 
+    // Used for sorting in ascending order of 
+    // Board value 
+    public int compare(Board a, Board b) 
+    { 
+        return a.getValue() - b.getValue(); 
+    } 
+} 
