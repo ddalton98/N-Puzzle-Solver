@@ -8,7 +8,7 @@ import java.time.*;
 *   Stephen Cliffe  17237157
 **/
 public class Main{
-  private static ArrayList<Board> open = new ArrayList<Board>();
+  private static PriorityQueue<Board> open = new PriorityQueue<>();
   private static ArrayList<Board> closed = new ArrayList<Board>();
   //private static int goal[][] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
   private static int goal[][] = {{1,2,3},{4,5,6},{7,8,0}};
@@ -33,21 +33,14 @@ public class Main{
 		//generate all possible board movements, then add to open ArrayList
 		getMovements(currentBoard, g+1);
 		
-		//sort open ArrayList by lowest G + H value
-		sort();
-		
 		//set currentBoard to board with lowest value
-		curTable = open.get(0).getTable();
-		g = open.get(0).getG();
+		Board tmp = open.remove();
+		curTable = tmp.getTable();
+		g = tmp.getG();
 		currentBoard = new Board(copyArr2D(curTable), goal, g);
 		
 		//adds chosen board to the closed array
 		closed.add(new Board(copyArr2D(curTable), goal, g));
-		
-		//removes chosen board from open array
-		open.remove(0);
-		open.trimToSize();
-		
 	}
 	
 	currentBoard.printBoard();
@@ -178,10 +171,6 @@ public static boolean isClosed(Board a){
 	return false;
 }
 
-  public static void sort(){
-	  Collections.sort(open, new SortBoard());
-  }
-
   public static int[][] copyArr2D(int[][] in){
     int [][] out = new int[goal.length][goal.length];
 
@@ -225,13 +214,3 @@ public static boolean isClosed(Board a){
 	  return temp;
   }
 }
-  
-  class SortBoard implements Comparator<Board> 
-{ 
-    // Used for sorting in ascending order of 
-    // Board value 
-    public int compare(Board a, Board b) 
-    { 
-        return a.getValue() - b.getValue(); 
-    } 
-} 
