@@ -1,4 +1,4 @@
-public class Board{
+public class Board implements Comparable<Board>{
   private int g;
   private int value;
   private int [][] arr;
@@ -60,6 +60,17 @@ public class Board{
 
   public void setG(int val){
 	  g = val;
+  }
+	
+	@Override
+  public int compareTo(Board board){
+	  if(this.getValue() > board.getValue()) {
+		return 1;
+	  }else if(this.getValue() < board.getValue()) {
+		return -1;
+	  }else {
+		  return 0;
+	  }
   }
 
   public void printBoard(){
