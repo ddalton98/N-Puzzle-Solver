@@ -11,7 +11,10 @@ public class Main{
   private static PriorityQueue<Board> open = new PriorityQueue<>();
   private static ArrayList<Board> closed = new ArrayList<Board>();
   public static final int[] goal = {1,2,3,-1,4,5,6,-1,7,8,0};
+  private static ArrayList<Board> path = new ArrayList<>();
   //public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
+  private static int len;
+  private static int sqr;	
 
   public static void main(String[] args){
 	//int[] start = {1,2,3,9,-1,7,8,0,11,-1,4,5,6,15,-1,14,12,13,10};
@@ -29,16 +32,23 @@ public class Main{
 	//check if currentBoard = end goal, exit if true
 	while(!board.equals(goal)){
 		//generate all possible board movements, then add to open ArrayList
-		getMovements(board;
+		getMovements(board);
 		
 		//set currentBoard to board with lowest value
 		Board temp = open.remove();
 	
 		//adds chosen board to the closed array
-		closed.add(new Board(temp));
+		closed.add(new Board(temp, temp));
 			     
-		board = new Board(temp);
+		board = new Board(temp, temp);
 	}
+	  
+	board = board.getParent();
+	while(board != null) {
+		path.add(board);
+		board = board.getParent();
+	}
+	printPath();
 	
 	System.out.println(board.toString());
 	LocalDateTime endTime = LocalDateTime.now();
@@ -104,7 +114,7 @@ public class Main{
       int[] n = Arrays.copyOf(state, length);
       n[northPos] = 0;
       n[pos] = next;
-      add = new Board(n,g,northPos);
+      add = new Board(n,g,northPos, board);
       if(!isClosed(add)) open.add(add);
     }
     if(eastPos < length && state[eastPos] != -1){
@@ -112,7 +122,7 @@ public class Main{
       int[] n = Arrays.copyOf(state, length);
       n[eastPos] = 0;
       n[pos] = next;
-      add = new Board(n,g,eastPos);
+      add = new Board(n,g,eastPos, board);
       if(!isClosed(add)) open.add(add);
     }
     if(southPos < length && state[southPos] != -1){
@@ -120,7 +130,7 @@ public class Main{
       int[] n = Arrays.copyOf(state, length);
       n[southPos] = 0;
       n[pos] = next;
-      add = new Board(n,g,southPos);
+      add = new Board(n,g,southPos, board);
       if(!isClosed(add)) open.add(add);
     }
     if(westPos > -1 && state[westPos] != -1){
@@ -128,7 +138,7 @@ public class Main{
       int[] n = Arrays.copyOf(state, length);
       n[westPos] = 0;
       n[pos] = next;
-      add = new Board(n,g,westPos);
+      add = new Board(n,g,westPos, board);
       if(!isClosed(add)) open.add(add);
     }
 }
