@@ -10,40 +10,37 @@ import java.time.*;
 public class Main{
   private static PriorityQueue<Board> open = new PriorityQueue<>();
   private static ArrayList<Board> closed = new ArrayList<Board>();
-  //private static int goal[][] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
-  private static int goal[][] = {{1,2,3},{4,5,6},{7,8,0}};
+  public static final int[] goal = {1,2,3,-1,4,5,6,-1,7,8,0};
+  //public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
 
   public static void main(String[] args){
-    int[][] temp;
-
-    temp = convertSqr(inputWindow("start state"));//inputWindow("start state"));
-    //goal = convertSqr(inputWindow("end state"));
+	//int[] start = {1,2,3,9,-1,7,8,0,11,-1,4,5,6,15,-1,14,12,13,10};
+  	int[] start = {3,8,1,-1,7,5,0,-1,2,4,6}; //medium
+        //int[] start = {8,6,7,-1,2,5,4,-1,3,0,1}; //hard
+	  
+	len = 9;
+        sqr = (int) Math.sqrt(len);
+	  
 	LocalDateTime startTime = LocalDateTime.now();
-    Board currentBoard = new Board(temp,goal,0);
+    	Board board = new Board(start, 0);
 	
 	int g = 0; //keeps track of level of current table
-	int curTable[][];
 	
 	//check if currentBoard = end goal, exit if true
-	while(currentBoard.finish() == false){
-		//set g to the g value of the currentBoard
-		g = currentBoard.getG();
-		//System.out.println(g + ", " + currentBoard.getValue());
-		
+	while(!board.equals(goal)){
 		//generate all possible board movements, then add to open ArrayList
-		getMovements(currentBoard, g+1);
+		getMovements(board;
 		
 		//set currentBoard to board with lowest value
-		Board tmp = open.remove();
-		curTable = tmp.getTable();
-		g = tmp.getG();
-		currentBoard = new Board(copyArr2D(curTable), goal, g);
-		
+		Board temp = open.remove();
+	
 		//adds chosen board to the closed array
-		closed.add(new Board(copyArr2D(curTable), goal, g));
+		closed.add(new Board(temp));
+			     
+		board = new Board(temp);
 	}
 	
-	currentBoard.printBoard();
+	System.out.println(board.toString());
 	LocalDateTime endTime = LocalDateTime.now();
 	Duration duration = Duration.between(startTime, endTime);
 
