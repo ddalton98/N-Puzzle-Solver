@@ -3,12 +3,14 @@ public class Board implements Comparable<Board>{
   private int value;
   private int[] state;
   private int posZ;
+  private Board parent;
 
-  public Board(int state[], int g, int posZ){
+  public Board(int state[], int g, int posZ, Board parent){
     this.g = g;
     this.state = state;
     this.posZ = posZ;
     value = this.getH() + g;
+    this.parent = parent;
   }
   public Board(int state[], int g){
     this.g = g;
@@ -16,11 +18,12 @@ public class Board implements Comparable<Board>{
     this.posZ = this.getPosZ(state);
     value = this.getH() + g;
   }	
-  public Board(Board b){
+  public Board(Board b, Board parent){
     this.g = b.getG();
     this.state = b.getState();
     this.posZ = this.getPosZ(state);
     value = this.getH() + g;
+    this.parent = parent;
   }
 	
   private int getH(){
