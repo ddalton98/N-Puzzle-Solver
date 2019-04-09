@@ -86,128 +86,58 @@ public class Main{
 	}
 
 
-  public static void getMovements(Board a, int g){
-	  int[][] table = a.getTable();
-	  int pos0[] = getPos0(table);
-	  int x = pos0[0];
-	  int y = pos0[1];
+  public static void getMovements(Board board){
+    int pos = board.getZ();
+    int[] state = board.getState();
+    int next = 0;
+    int g = board.getG() + 1;
+    int length = state.length;
+    Board add;
 
-	  int west  = y + 1;
-	  int east  = y - 1;
-	  int north = x + 1;
-	  int south = x - 1;
+    int northPos = pos - sqr - 1;
+    int eastPos  = pos + 1;
+    int southPos = pos + sqr + 1;
+    int westPos  = pos - 1;
 
-	  if(!(north > goal.length-1)){ //north
-		  int next = table[north][y];
-		  //System.out.print("North: " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[north][y] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(south < 0)){ //south
-		  int next = table[south][y];
-		  //System.out.print("South: " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[south][y] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(east < 0)){ //east
-		  int next = table[x][east];
-		  //System.out.print("East:  " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[x][east] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(west > goal.length-1)){ //west
-		  int next = table[x][west];
-		  //System.out.print("West:  " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[x][west] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-}
-
-public static boolean isClosed(Board a){
-	boolean result;
-	
-	for(int i = 0; i < closed.size(); i++){
-		if(a.isEqual(closed.get(i))) return true;
-	}
-	
-	return false;
-}
-
-  public static int[][] copyArr2D(int[][] in){
-    int [][] out = new int[goal.length][goal.length];
-
-    for(int i = 0; i < in.length; i++){
-      for(int j = 0; j < in.length; j++){
-        out[i][j] = in[i][j];
-      }
+    if(northPos > -1 && state[northPos] != -1){
+      next = state[northPos];
+      int[] n = Arrays.copyOf(state, length);
+      n[northPos] = 0;
+      n[pos] = next;
+      add = new Board(n,g,northPos);
+      if(!isClosed(add)) open.add(add);
     }
-    return out;
-  }
+    if(eastPos < length && state[eastPos] != -1){
+      next = state[eastPos];
+      int[] n = Arrays.copyOf(state, length);
+      n[eastPos] = 0;
+      n[pos] = next;
+      add = new Board(n,g,eastPos);
+      if(!isClosed(add)) open.add(add);
+    }
+    if(southPos < length && state[southPos] != -1){
+      next = state[southPos];
+      int[] n = Arrays.copyOf(state, length);
+      n[southPos] = 0;
+      n[pos] = next;
+      add = new Board(n,g,southPos);
+      if(!isClosed(add)) open.add(add);
+    }
+    if(westPos > -1 && state[westPos] != -1){
+      next = state[westPos];
+      int[] n = Arrays.copyOf(state, length);
+      n[westPos] = 0;
+      n[pos] = next;
+      add = new Board(n,g,westPos);
+      if(!isClosed(add)) open.add(add);
+    }
+}
 
-  public static int[] getPos0(int[][] arr){
-	  int[] pos = {0,0};
-
-	  for(int x = 0; x < arr.length; x++){
-		for(int y = 0; y < arr.length; y++){
-			if(arr[x][y] == 0){
-				pos[0] = x;
-				pos[1] = y;
-			}
-		}
-	  }
-
-	  return pos;
-  }
-
-  public static int[][] convertSqr(String in){
-	  int temp [][] = new int[goal.length][goal.length];
-
-	  String split[] = in.split("\\s+");
-	  int len = (int) Math.sqrt(split.length);
-	  int count = 0;
-
-	  for(int x = 0; x < len; x++){
-		for(int y = 0; y < len; y++){
-			temp[x][y] = Integer.parseInt(split[count]);
-			count++;
-		}
-	  }
-
-	  return temp;
-  }
+private static boolean isClosed(Board board){
+    int[] state = board.getState();
+    for(int i = 0; i < closed.size(); i++){
+      if(closed.get(i).equals(state)) return true;
+    }
+    return false;
+}
 }
