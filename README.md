@@ -7,7 +7,7 @@ This is a an A-Star (A*) based heuristic algorithm to solve a given n-puzzle fro
 * To run this program clone the repository to your own machine with java JDK 8 or newer.
 * Compile the program in the command line or within your IDE of choice.
 
-### Running the program
+### Running The Program
 
 * Run the program from the command line.
 * You will be presented with a window asking for a start state. Enter your puzzle in the format of a numbers separated by spaces. An 8-puzzle will require 9 numbers to be entered with '0' representing the empty tile i.e. 
@@ -22,6 +22,14 @@ Equates to
 * You will them be prompted for the goal state which should be entered in the same format as above. Use the same size goal and start states.
 * Depending on the complexity of the puzzle entered it may take less than a second but may take upto several minutes for complex puzzles.
 * Once the solution has been reached the console will print out the steps taken to reach the goal and how long it took.
+
+### Common Start States
+
+Input | Complexity
+--- | --- 
+1 2 3 7 8 0 4 5 6 | Easy
+3 8 1 7 5 0 2 4 6 | Medium
+8 6 7 2 5 4 3 0 1 | Hardest
 
 ## Authors
 
