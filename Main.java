@@ -150,4 +150,16 @@ private static boolean isClosed(Board board){
     }
     return false;
 }
+public static void printPath() {
+	Collections.reverse(path);
+	System.out.println("Start State:");
+	System.out.println(path.get(0).toString());
+	System.out.println("========");
+	for(Board temp : path) {
+		System.out.println("Step: " + temp.getG());
+		System.out.println(temp.toString());
+	}
+	System.out.println("========\nGoal State:");
+	System.out.println(path.get(path.size() - 1).toString());
+}
 }
