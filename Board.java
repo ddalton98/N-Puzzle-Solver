@@ -79,4 +79,8 @@ private int getPosZ(int[] arr){
   public int[] getState(){
     return Arrays.copyOf(state, state.length);
   }
+	
+  public Board getParent(){
+    return parent;
+  }
 }
