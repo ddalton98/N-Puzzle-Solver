@@ -9,7 +9,7 @@ import java.time.*;
 **/
 public class Main{
   private static PriorityQueue<Board> open = new PriorityQueue<>();
-  private static ArrayList<Board> closed = new ArrayList<Board>();
+  private static HashMap<String, Board> closed = new HashMap<>();
   public static final int[] goal = {1,2,3,-1,4,5,6,-1,7,8,0};
   private static ArrayList<Board> path = new ArrayList<>();
   //public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
@@ -26,9 +26,7 @@ public class Main{
 	  
 	LocalDateTime startTime = LocalDateTime.now();
     	Board board = new Board(start, 0);
-	
-	int g = 0; //keeps track of level of current table
-	
+
 	//check if currentBoard = end goal, exit if true
 	while(!board.equals(goal)){
 		//generate all possible board movements, then add to open ArrayList
@@ -38,7 +36,7 @@ public class Main{
 		Board temp = open.remove();
 	
 		//adds chosen board to the closed array
-		closed.add(new Board(temp, temp));
+		closed.put(temp.getHash(), temp);
 			     
 		board = new Board(temp, temp);
 	}
@@ -144,11 +142,8 @@ public class Main{
 }
 
 private static boolean isClosed(Board board){
-    int[] state = board.getState();
-    for(int i = 0; i < closed.size(); i++){
-      if(closed.get(i).equals(state)) return true;
-    }
-    return false;
+    String key = board.getHash();
+    return closed.containsKey(key);
 }
 public static void printPath() {
 	Collections.reverse(path);
