@@ -27,6 +27,7 @@ public class Main{
 	LocalDateTime startTime = LocalDateTime.now();
     	Board board = new Board(start, 0);
 
+	int maxIterations = maxIterations(len);
 	//check if currentBoard = end goal, exit if true
 	while(!board.equals(goal)){
 		//generate all possible board movements, then add to open ArrayList
@@ -39,20 +40,28 @@ public class Main{
 		closed.put(temp.getHash(), temp);
 			     
 		board = new Board(temp, temp);
+		if(closed.size() >= maxIterations){
+		  exceedMax = true;
+		  break;
+		}
 	}
-	  
-	board = board.getParent();
-	while(board != null) {
-		path.add(board);
-		board = board.getParent();
-	}
-	printPath();
 	
-	System.out.println(board.toString());
-	LocalDateTime endTime = LocalDateTime.now();
-	Duration duration = Duration.between(startTime, endTime);
+	if(exceedMax){
+	  	System.out.println("Exceeded the max number of valid iterations.\nPuzzle must be unsolvable");
+	}else{
+		board = board.getParent();
+		while(board != null) {
+			path.add(board);
+			board = board.getParent();
+		}
+		printPath();
 
-	System.out.println("Time taken: " + duration.getSeconds() + "." + duration.getNano()/1000000 + "s");
+		System.out.println(board.toString());
+		LocalDateTime endTime = LocalDateTime.now();
+		Duration duration = Duration.between(startTime, endTime);
+
+		System.out.println("Time taken: " + duration.getSeconds() + "." + duration.getNano()/1000000 + "s");
+	}
   }
   
   private static String inputWindow(String state){
@@ -140,6 +149,14 @@ public class Main{
       if(!isClosed(add)) open.add(add);
     }
 }
+	
+private static int maxIterations(int n){
+  int result = 1;
+  for(int i = 1; i <= n; i++){
+ 	result *= i;
+  }
+	return result/2;
+  }
 
 private static boolean isClosed(Board board){
     String key = board.getHash();
