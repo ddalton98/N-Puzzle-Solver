@@ -1,74 +1,116 @@
-public class Board{
+import java.util.Arrays;
+
+public class Board implements Comparable<Board>{
   private int g;
   private int value;
-  private int [][] arr;
-  private int [][] goal;
+  private int[] state;
+  private int posZ;
+  private Board parent;
+  private String hash;
 
-  public Board(int arr[][], int goal[][], int g){
+  public Board(int state[], int g, int posZ, Board parent){
+		this.g = g;
+		this.state = state;
+		this.posZ = posZ;
+		value = this.getH() + g;
+		this.parent = parent;
+		hash = generateHash(state);
+	}
+  public Board(int state[], int g){
     this.g = g;
-    this.arr = arr;
-	  this.goal = goal;
-    this.value = g + this.getH();
+    this.state = state;
+    this.posZ = this.getPosZ(state);
+    value = this.getH() + g;
+		hash = generateHash(state);
+  }	
+  public Board(Board b, Board parent){
+    this.g = b.getG();
+    this.state = b.getState();
+    this.posZ = this.getPosZ(state);
+    value = this.getH() + g;
+    this.parent = parent;
+		hash = generateHash(state);
   }
-
+	
   private int getH(){
     int count = 0;
-
-	for(int x = 0; x < goal.length; x++){
-		for(int y = 0; y < goal.length; y++){
-			if(arr[x][y] != goal[x][y]) count++;
-		}
-	  }
+	  
+    for(int i = 0; i < state.length; i++){
+      if(state[i] != Main.goal[i]){
+        count++;
+      }
+    }
     return count;
   }
-
-  public boolean finish(){
-	  boolean ret = false;
-
-	  if(this.getH() == 0) ret = true;
-
-	  return ret;
-
-  }
-  
-  public boolean isEqual(Board a){
-	  int[][] temp = a.getTable();
-	  int count = 0;
-	  
-	  for(int x = 0; x < arr.length; x++){
-		for(int y = 0; y < arr.length; y++){
-			if(arr[x][y] == temp[x][y]) count++;
-		}
-	  }
-	  
-	  if(count == arr.length*arr.length){
-		  return true;
-	  } else return false;
+private int getPosZ(int[] arr){
+    for(int i = 0; i < arr.length; i++){
+      if(arr[i] == 0) return i;
+    }
+    return -1;
   }
 
-  public int[][] getTable(){
-    return arr;
+  public boolean equals(int[] check){
+    return Arrays.equals(state, check);
   }
 
-  public int getValue(){
+  @Override
+  public int compareTo(Board board){
+    return this.getVal() - board.getVal();
+  }
+
+  public String toString(){
+    String res = "";
+    for(int i = 0; i < state.length; i++){
+			if(state[i] != -1){
+				if(state[i] > 9){
+					res += state[i] + " ";
+				}else {
+					res += state[i] + "  ";
+				}
+			} else {
+				res += "\n";
+			}
+  }
+	  return res;
+  }
+
+  public int getVal(){
     return value;
+  }
+
+  public int getZ(){
+    return posZ;
   }
 
   public int getG(){
     return g;
   }
 
-  public void setG(int val){
-	  g = val;
+  public int[] getState(){
+    return Arrays.copyOf(state, state.length);
   }
-
-  public void printBoard(){
-	  for(int i = 0; i < arr.length; i++){
-		  for(int j = 0; j < arr.length; j++){
-			  System.out.print(arr[i][j] + " ");
-		  }
-		  System.out.println("");
-	  }
-	  System.out.println("");
+		
+	public String getHash(){
+		return hash;
+	}
+	
+  public Board getParent(){
+    return parent;
   }
+		
+	public static String generateHash(int state[]){
+		String output = "";
+		int r = 1;
+		int c = 1;
+		for(int i = 0; i < state.length; i++){
+			int curState = state[i];
+			if(curState != -1) {
+				int n = (r + c)*curState;
+				output += n;
+			}else{
+				r++;
+			}
+		}
+		return output;
+	}
 }

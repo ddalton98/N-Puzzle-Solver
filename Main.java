@@ -1,227 +1,220 @@
-import java.util.*;
-import java.lang.*;
 import javax.swing.*;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.*;
+
 /**
-*   Alan Finnin     17239621
-*   Daniel Dalton   17219477
-*   Stephen Cliffe  17237157
-**/
-public class is17237157{
-  private static ArrayList<Board> open = new ArrayList<Board>();
-  private static ArrayList<Board> closed = new ArrayList<Board>();
-  //private static int goal[][] = {{1,2,3,4},{5,6,7,8},{9,10,11,12},{13,14,15,0}};
-  private static int goal[][] = {{1,2,3},{4,5,6},{7,8,0}};
+ * Alan Finnin     17239621
+ * Daniel Dalton   17219477
+ * Stephen Cliffe  17237157
+ **/
+public class Main {
+	private static PriorityQueue<Board> open = new PriorityQueue<>();
+	private static HashMap<String, Board> closed = new HashMap<>();
+	private static ArrayList<Board> path = new ArrayList<>();
+	public static final int[] goal = {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 0};
+	//public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
+	private static int len;
+	private static int sqr;
 
-  public static void main(String[] args){
-    int[][] temp;
+	public static void main(String[] args) {
+		//int[] start = {5,1,7,3,-1,9,2,11,4,-1,13,6,15,8,-1,0,10,14,12};//easiest
+		//int[] start = {5,2,4,8,-1,10,0,3,14,-1,13,6,11,12,-1,1,15,9,7};
+		//int[] start = {15, 14, 8, 12, -1, 10, 11, 9, 13, -1, 2, 6, 5, 1, -1, 3, 7, 4, 0}; //hardest
 
-    temp = convertSqr("1 2 3 7 8 0 4 5 6");//inputWindow("start state"));
-    //goal = convertSqr(inputWindow("end state"));
+		int[] start = {3, 8, 1, -1, 7, 5, 0, -1, 2, 4, 6}; //medium
+		//int[] start = {8,6,7,-1,2,5,4,-1,3,0,1}; //hard
+		//int[] start = {1,0,3,-1,2,4,5,-1,6,7,8}; //unsolvable
+		boolean exceedMax = false;
 
-    Board currentBoard = new Board(temp,goal,0);
-	
-	int g = 0; //keeps track of level of current table
-	
-	//check if currentBoard = end goal, exit if true
-	while(currentBoard.finish() == false){
-		//set g to the g value of the currentBoard
-		g = currentBoard.getG();
-		//System.out.println(g + ", " + currentBoard.getValue());
-		
-		//generate all possible board movements, then add to open ArrayList
-		getMovements(currentBoard, g+1);
-		
-		//sort open ArrayList by lowest G + H value
-		sort();
-		
-		//set currentBoard to board with lowest value
-		currentBoard = new Board(copyArr2D(open.get(0).getTable()), goal, open.get(0).getG());
-		
-		//adds chosen board to the closed array
-		closed.add(new Board(copyArr2D(open.get(0).getTable()), goal, open.get(0).getG()));
-		
-		//removes chosen board from open array
-		open.remove(0);
-		open.trimToSize();
-		
+		len = 9;
+		sqr = (int) Math.sqrt(len);
+
+		LocalDateTime startTime = LocalDateTime.now();
+		Board board = new Board(start, 0);
+
+		int g = 0; //keeps track of level of current table
+		int maxIterations = maxIterations(len);
+		int iterations = 0;
+		//check if currentBoard = end goal, exit if true
+		while (!board.equals(goal)) {
+			iterations++;
+			//generate all possible board movements, then add to open ArrayList
+			getMovements(board);
+			//set currentBoard to board with lowest value
+			Board temp = open.remove();
+
+			//adds chosen board to the closed array
+			closed.put(temp.getHash(), temp);
+
+			board = new Board(temp, temp);
+
+			if(closed.size() >= maxIterations){
+				exceedMax = true;
+				break;
+			}
+		}
+		//follows the trail of parent boards to determine the path taken
+		if(exceedMax){
+			System.out.println("Exceeded the max number of valid iterations.\nPuzzle must be unsolvable");
+		}else {
+			board = board.getParent();
+			while (board != null) {
+				path.add(board);
+				board = board.getParent();
+			}
+			printPath();
+
+			LocalDateTime endTime = LocalDateTime.now();
+			Duration duration = Duration.between(startTime, endTime);
+
+			System.out.println("Time taken: " + duration.getSeconds() + "." + duration.getNano() / 1000000 + "s");
+			System.out.println("Iterations: " + closed.size());
+		}
 	}
-	
-	currentBoard.printBoard();
-  }
-  
-  private static String inputWindow(String state){
-		
+
+	private static String inputWindow(String state){
+
 		boolean correct = true;
 		String msg = "Please input a square puzzle(3x3, 4x4, etc.)\n using numbers" + state + " with a space separating each";
 		String pattern = "^(\\d{1,2}\\s+){8,}\\d{1,2}(?=\\s)*";
 		String rawInput = JOptionPane.showInputDialog(null, msg, "8 Puzzle", JOptionPane.QUESTION_MESSAGE);
 
-		if(rawInput.matches(pattern)){
+		if (rawInput.matches(pattern)) {
 			String[] strInput = rawInput.split("\\s+");
 			int inputArr[] = new int[strInput.length];
-			for(int i = 0; i < strInput.length; i++){
+			for (int i = 0; i < strInput.length; i++) {
 				inputArr[i] = Integer.parseInt(strInput[i]);
 			}
-			
+
 			int tempArr[] = inputArr;
 			Arrays.sort(tempArr);
 
-			for(int i = 0; i < inputArr.length; i++){
-				if(tempArr[i] != i){
+			for (int i = 0; i < inputArr.length; i++) {
+				if (tempArr[i] != i) {
 					JOptionPane.showMessageDialog(null, "Entry format incorrect: Duplicate Digit.", "Error!", JOptionPane.ERROR_MESSAGE);
 					return inputWindow(state);
 				}
 			}
 			//Test for squareness
-			int x = tempArr[tempArr.length-1]+1;
-			double sr = Math.sqrt(x); 
-		  
-			if((sr - Math.floor(sr)) == 0){
+			int x = tempArr[tempArr.length - 1] + 1;
+			double sr = Math.sqrt(x);
+
+			if ((sr - Math.floor(sr)) == 0) {
+				len = tempArr.length;
 				return rawInput;
 			}
 			JOptionPane.showMessageDialog(null, "Entry format incorrect: Not a perfect square puzzle\nI.E. 3x3, 4x4 etc.", "Error", JOptionPane.ERROR_MESSAGE);
 			return inputWindow(state);
-		}else {
+		} else {
 			JOptionPane.showMessageDialog(null, "Entry format incorrect, Tip: Keep cats away from the keyboard.", "Error", JOptionPane.ERROR_MESSAGE);
 			return inputWindow(state);
 		}
 	}
-}
 
-  public static void getMovements(Board a, int g){
-	  int[][] table = a.getTable();
-	  int pos0[] = getPos0(table);
-	  int x = pos0[0];
-	  int y = pos0[1];
 
-	  int west  = y + 1;
-	  int east  = y - 1;
-	  int north = x + 1;
-	  int south = x - 1;
+	public static void getMovements(Board board) {
+		int pos = board.getZ();
+		int[] state = board.getState();
+		int g = board.getG() + 1;
+		int length = state.length;
 
-	  if(!(north > goal.length-1)){ //north
-		  int next = table[north][y];
-		  //System.out.print("North: " + next);
+		int northPos = pos - sqr - 1;
+		int eastPos = pos + 1;
+		int southPos = pos + sqr + 1;
+		int westPos = pos - 1;
 
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[north][y] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(south < 0)){ //south
-		  int next = table[south][y];
-		  //System.out.print("South: " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[south][y] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(east < 0)){ //east
-		  int next = table[x][east];
-		  //System.out.print("East:  " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[x][east] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-
-    if(!(west > goal.length-1)){ //west
-		  int next = table[x][west];
-		  //System.out.print("West:  " + next);
-
-		  int[][] b = copyArr2D(a.getTable());
-		  b[x][y] = next;
-		  b[x][west] = 0;
-
-		  Board temp = new Board(b, goal, g);
-		  //System.out.println("\tH: " + temp.getValue());
-		  if(!isClosed(temp)){
-			open.add(temp);
-		  }
-	  }
-}
-
-public static boolean isClosed(Board a){
-	boolean result;
-	
-	for(int i = 0; i < closed.size(); i++){
-		if(a.isEqual(closed.get(i))) return true;
+		if (northPos > -1 && state[northPos] != -1) {
+			getDirection(board, g, northPos);
+		}
+		if (eastPos < length && state[eastPos] != -1) {
+			getDirection(board, g, eastPos);
+		}
+		if (southPos < length && state[southPos] != -1) {
+			getDirection(board, g, southPos);
+		}
+		if (westPos > -1 && state[westPos] != -1) {
+			getDirection(board, g, westPos);
+		}
 	}
-	
-	return false;
-}
 
-  public static void sort(){
-	  int n = open.size();
-	  for(int i = 0; i < n -1; i++){
-		  for(int j = 0; j < n-i-1; j++){
-			  if(open.get(j).getValue() > open.get(j+1).getValue()){
-				  Collections.swap(open, j, j + 1);
-			  }
-		  }
-	  }
-  }
+	private static void getDirection(Board board, int g, int dirPos){
+		int[] state = board.getState();
+		int next = state[dirPos];
+		int[] n = Arrays.copyOf(state, state.length);
+		n[dirPos] = 0;
+		n[board.getZ()] = next;
+		Board add = new Board(n, g, dirPos, board.getParent());
+		if (!isClosed(add)) open.add(add);
+	}
 
-  public static int[][] copyArr2D(int[][] in){
-    int [][] out = new int[goal.length][goal.length];
+	private static boolean isClosed(Board board) {
+		String key = board.getHash();
+		//int[] state = board.getState();
+		return closed.containsKey(key);
+	}
 
-    for(int i = 0; i < in.length; i++){
-      for(int j = 0; j < in.length; j++){
-        out[i][j] = in[i][j];
-      }
-    }
+	public static int[][] copyArr2D(int[][] in) {
+		int[][] out = new int[goal.length][goal.length];
 
-    return out;
-  }
-
-  public static int[] getPos0(int[][] arr){
-	  int[] pos = {0,0};
-
-	  for(int x = 0; x < arr.length; x++){
-		for(int y = 0; y < arr.length; y++){
-			if(arr[x][y] == 0){
-				pos[0] = x;
-				pos[1] = y;
+		for (int i = 0; i < in.length; i++) {
+			for (int j = 0; j < in.length; j++) {
+				out[i][j] = in[i][j];
 			}
 		}
-	  }
+		return out;
+	}
 
-	  return pos;
-  }
+	public static int[] getPos0(int[][] arr) {
+		int[] pos = {0, 0};
 
-  public static int[][] convertSqr(String in){
-	  int temp [][] = new int[goal.length][goal.length];
-
-	  String split[] = in.split("\\s+");
-	  int len = (int) Math.sqrt(split.length);
-	  int count = 0;
-
-	  for(int x = 0; x < len; x++){
-		for(int y = 0; y < len; y++){
-			temp[x][y] = Integer.parseInt(split[count]);
-			count++;
+		for (int x = 0; x < arr.length; x++) {
+			for (int y = 0; y < arr.length; y++) {
+				if (arr[x][y] == 0) {
+					pos[0] = x;
+					pos[1] = y;
+				}
+			}
 		}
-	  }
 
-	  return temp;
-  }
+		return pos;
+	}
+
+	public static int[][] convertSqr(String in) {
+		int temp[][] = new int[goal.length][goal.length];
+
+		String split[] = in.split("\\s+");
+		int len = (int) Math.sqrt(split.length);
+		int count = 0;
+
+		for (int x = 0; x < len; x++) {
+			for (int y = 0; y < len; y++) {
+				temp[x][y] = Integer.parseInt(split[count]);
+				count++;
+			}
+		}
+
+		return temp;
+	}
+
+	private static int maxIterations(int n){
+		int result = 1;
+		for(int i = 1; i <= n; i++){
+			result *= i;
+		}
+		return result/2;
+	}
+
+	public static void printPath() {
+		Collections.reverse(path);
+		System.out.println("Start State:");
+		System.out.println(path.get(0).toString());
+		System.out.println("========");
+		for(Board temp : path) {
+			System.out.println("Step: " + temp.getG());
+			System.out.println(temp.toString());
+		}
+		System.out.println("========\nGoal State:");
+		System.out.println(path.get(path.size() - 1).toString());
+	}
 }
