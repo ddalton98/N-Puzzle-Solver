@@ -1,9 +1,12 @@
+import java.util.Arrays;
+
 public class Board implements Comparable<Board>{
   private int g;
   private int value;
   private int[] state;
   private int posZ;
   private Board parent;
+  private String hash;
 
   public Board(int state[], int g, int posZ, Board parent){
 		this.g = g;
@@ -67,7 +70,8 @@ private int getPosZ(int[] arr){
 			} else {
 				res += "\n";
 			}
-    return res;
+  }
+	  return res;
   }
 
   public int getVal(){
