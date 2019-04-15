@@ -21,6 +21,7 @@ public class Main{
   	int[] start = {3,8,1,-1,7,5,0,-1,2,4,6}; //medium
         //int[] start = {8,6,7,-1,2,5,4,-1,3,0,1}; //hard
 	  
+	boolean exceedMax = false;
 	len = 9;
         sqr = (int) Math.sqrt(len);
 	  
