@@ -20,7 +20,7 @@ Equates to
 5 6 7
 ```
 * You will them be prompted for the goal state which should be entered in the same format as above. Use the same size goal and start states.
-* Depending on the complexity of the puzzle entered it may take less than a second but may take upto several minutes for complex puzzles.
+* The puzzle should complete for any complexity 3x3 in less than a second. Simple 4x4 may take longer and complex ones may take several minutes.
 * Once the solution has been reached the console will print out the steps taken to reach the goal and how long it took.
 
 ### Common Start States
