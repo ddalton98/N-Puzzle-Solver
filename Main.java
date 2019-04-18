@@ -12,14 +12,14 @@ public class Main {
 	private static PriorityQueue<Board> open = new PriorityQueue<>();
 	private static HashMap<String, Board> closed = new HashMap<>();
 	private static ArrayList<Board> path = new ArrayList<>();
-	public static final int[] goal = {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 0};
-	//public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
+	//public static final int[] goal = {1, 2, 3, -1, 4, 5, 6, -1, 7, 8, 0};
+	public static final int[] goal = {1,2,3,4,-1,5,6,7,8,-1,9,10,11,12,-1,13,14,15,0};
 	private static int len;
 	private static int sqr;
 
 	public static void main(String[] args) {
 		//int[] start = {5,1,7,3,-1,9,2,11,4,-1,13,6,15,8,-1,0,10,14,12};//easiest
-		//int[] start = {5,2,4,8,-1,10,0,3,14,-1,13,6,11,12,-1,1,15,9,7};
+		int[] start = {1,0,2,4,-1,5,7,3,8,-1,9,6,10,12,-1,13,14,11,15};//test
 		//int[] start = {15, 14, 8, 12, -1, 10, 11, 9, 13, -1, 2, 6, 5, 1, -1, 3, 7, 4, 0}; //hardest
 
 		int[] start = {3, 8, 1, -1, 7, 5, 0, -1, 2, 4, 6}; //medium
@@ -27,7 +27,7 @@ public class Main {
 		//int[] start = {1,0,3,-1,2,4,5,-1,6,7,8}; //unsolvable
 		boolean exceedMax = false;
 
-		len = 9;
+		len = 16;
 		sqr = (int) Math.sqrt(len);
 
 		LocalDateTime startTime = LocalDateTime.now();
