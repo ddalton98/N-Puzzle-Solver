@@ -1,6 +1,7 @@
 import java.util.Arrays;
 
 public class Board implements Comparable<Board>{
+  private static int[] goal;
   private int g;
   private int value;
   private int[] state;
@@ -36,7 +37,7 @@ public class Board implements Comparable<Board>{
     int count = 0;
 	  
     for(int i = 0; i < state.length; i++){
-      if(state[i] != Main.goal[i]){
+      if(state[i] != goal[i]){
         count++;
       }
     }
@@ -97,6 +98,13 @@ private int getPosZ(int[] arr){
   public Board getParent(){
     return parent;
   }
+	public static int[] getGoal(){
+		return goal;
+	}
+
+	public static void setGoal(int[] inGoal){
+		goal = inGoal;
+	}
 		
 	public static String generateHash(int state[]){
 		String output = "";
