@@ -28,7 +28,7 @@ public class Main {
 		int maxIterations = maxIterations(len);
 		
 		//check if currentBoard = end goal, exit if true
-		while (!board.equals(goal)) {
+		while (!board.equals(Board.getGoal())) {
 			//generate all possible board movements, then add to open ArrayList
 			getMovements(board);
 			//set currentBoard to board with lowest value
