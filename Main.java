@@ -84,8 +84,7 @@ public class Main {
 				}
 			}
 			//Test for squareness
-			int x = tempArr[inputArr.length - 1] + 1;
-			double sr = Math.sqrt(x);
+			double sr = Math.sqrt(inputArr.length);
 
 			if ((sr - Math.floor(sr)) == 0) {
 				len = inputArr.length;
@@ -141,7 +140,7 @@ public class Main {
 		return closed.containsKey(key);
 	}
 
-	public static int[][] convertSqr(String in) {
+	public static int[] convertSqr(String in) {
 		int temp[] = new int[len + (sqr-1)];
 
 		String split[] = in.split("\\s+");
